@@ -9,40 +9,26 @@ public class Planet : MonoBehaviour
 
     int planetHealth;
     int maxPlanetHealth = 3;
-
     float enemySpawnTimer = 0;
     float enemySpawnTimerMax = 1;
-
     int maxEnemiesMax = 10;
-
     int maxEnemies = 10;
-
     public GameObject enemy;
     public Transform scoreText;
     public GameObject piece;
     public List<GameObject> enemyList = new List<GameObject>();
-
     public List<GameObject> truckList = new List<GameObject>();
-
     int score;
-
     float diff = 1f;
-
     float diffTimer = 0f;
     float diffTimerMax = 15f;
-
-
     bool dead = false;
     float deadAnimTimer = 0.0f;
     float deadAnimTimerMax = 5.0f;
-
     public GameObject cracks;
     public List<Sprite> crackSprites = new List<Sprite>();
-
     public List<AudioClip> audioTreadList = new List<AudioClip>();
-
     public AudioSource soundPlayer;
-
     float treadSoundTimer = 0.0f;
     float treadSoundTimerMax = 0.2f;
 
@@ -64,10 +50,9 @@ public class Planet : MonoBehaviour
         cracks.GetComponent<SpriteRenderer>().sprite = crackSprites[s];
     }
 
-
     void updateDiff()
     {
-
+        updateScore();
         maxEnemies = Mathf.RoundToInt(maxEnemiesMax * diff);
     }
 
@@ -101,11 +86,11 @@ public class Planet : MonoBehaviour
         }
     }
 
-    void enemyDie()
+    void killEnemy()
     {
-        for (var i = 0; i < enemyList.Count; i++)
+        for (var i = 1; i < enemyList.Count; i++)
         {
-            enemyList[i].GetComponent<Alien>().die();
+            enemyList[enemyList.Count-i].GetComponent<Alien>().die();
         }
 
 
@@ -113,6 +98,8 @@ public class Planet : MonoBehaviour
 
     void lose()
     {
+
+        killEnemy();
         for (var i = 0; i < truckList.Count; i++)
         {
             GameObject t = truckList[i];
@@ -120,8 +107,7 @@ public class Planet : MonoBehaviour
             t.GetComponent<Truck>().die();
         }
 
-        enemyDie();
-
+        
         cracks.GetComponent<Renderer>().enabled = false;
 
         gameObject.GetComponent<Renderer>().enabled = false;
@@ -141,8 +127,11 @@ public class Planet : MonoBehaviour
     {
         int hp = planetHealth;
         int sc = score;
+
+        int d = Mathf.RoundToInt((((diff - 1) * 10) + 1));
+
         scoreText.GetComponent<TMPro.TextMeshProUGUI>().text =
-            "Health: " + hp.ToString() + "\n" +
+            "Danger Level: " + d.ToString() + "\n" +
             "Score: " + sc.ToString();
     }
 
